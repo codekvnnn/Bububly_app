@@ -1,49 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Catch the Falling Objects Game</title>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-
-        #gameArea {
-            position: relative;
-            width: 400px;
-            height: 600px;
-            border: 2px solid #000;
-            overflow: hidden;
-        }
-
-        .basket {
-            position: absolute;
-            bottom: 0;
-            width: 50px;
-            height: 50px;
-            background-color: #333;
-        }
-
-        .falling-object {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: red;
-            border-radius: 50%;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Falling Object</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="gameArea">
-        <div class="basket" id="basket"></div>
+        <div id="catcher"></div>
+        <div id="fallingObject"></div>
     </div>
-
-    <script>
-        // use my JS code or create your own custom one. Let me know what you think?! (socials coming soon)
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
