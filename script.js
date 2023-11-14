@@ -1,65 +1,59 @@
-// this would be in the JS portion on the HTML file. 
-
-
 const gameArea = document.getElementById('gameArea');
-const basket = document.getElementById('basket');
-let gameAreaWidth = gameArea.offsetWidth;
-let basketSpeed = 20;
-let interval;
-let objects = [];
-let score = 0;
+const catcher = document.getElementById('catcher');
+const fallingObject = document.getElementById('fallingObject');
 
-document.addEventListener('keydown', (e) => {
-    switch(e.key) {
-        case 'ArrowLeft':
-            moveBasket(-basketSpeed);
-            break;
-        case 'ArrowRight':
-            moveBasket(basketSpeed);
-            break;
-    }
+let gameAreaWidth = gameArea.offsetWidth;
+let catcherWidth = catcher.offsetWidth;
+let fallingObjectSize = fallingObject.offsetWidth;
+let gameInterval;
+let fallingSpeed = 2;
+
+document.addEventListener('mousemove', (e) => {
+    let gameAreaRect = gameArea.getBoundingClientRect();
+    let newLeft = e.clientX - gameAreaRect.left - (catcherWidth / 2);
+
+    if (newLeft < 0) newLeft = 0;
+    else if (newLeft > gameAreaWidth - catcherWidth) newLeft = gameAreaWidth - catcherWidth;
+
+    catcher.style.left = newLeft + 'px';
 });
 
-function moveBasket(direction) {
-    let currentLeft = parseInt(window.getComputedStyle(basket).getPropertyValue('left'));
-    if (currentLeft + direction >= 0 && currentLeft + direction <= gameAreaWidth - basket.offsetWidth) {
-        basket.style.left = (currentLeft + direction) + 'px';
-    }
-}
+function startGame() {
+    fallingObject.style.top = '0px';
+    fallingObject.style.left = Math.random() * (gameAreaWidth - fallingObjectSize) + 'px';
 
-function dropObjects() {
-    const objDiv = document.createElement('div');
-    objDiv.className = 'falling-object';
-    objDiv.style.left = Math.floor(Math.random() * (gameAreaWidth - 30)) + 'px';
-    gameArea.appendChild(objDiv);
-    objects.push(objDiv);
-}
+    gameInterval = setInterval(() => {
+        let fallingObjectTop = parseInt(fallingObject.style.top);
+        fallingObject.style.top = fallingObjectTop + fallingSpeed + 'px';
 
-function updateObjects() {
-    for (let obj of objects) {
-        let objTop = parseInt(window.getComputedStyle(obj).getPropertyValue('top'));
-        if (objTop >= gameArea.offsetHeight - basket.offsetHeight - 30) {
-            if (isCaught(obj)) {
-                score++;
-                console.log('Score:', score);
+        if (fallingObjectTop > gameArea.offsetHeight - fallingObjectSize - 30) {
+            if (isCaught()) {
+                alert('Good catch!');
+                resetGame();
+            } else {
+                alert('You missed!');
+                resetGame();
             }
-            obj.remove();
-        } else {
-            obj.style.top = (objTop + 5) + 'px';
         }
-    }
+    }, 20);
 }
 
-function isCaught(obj) {
-    let objLeft = parseInt(window.getComputedStyle(obj).getPropertyValue('left'));
-    let basketLeft = parseInt(window.getComputedStyle(basket).getPropertyValue('left'));
-    return objLeft >= basketLeft && objLeft <= basketLeft + basket.offsetWidth;
+function isCaught() {
+    let catcherRect = catcher.getBoundingClientRect();
+    let fallingObjectRect = fallingObject.getBoundingClientRect();
+
+    return (
+        fallingObjectRect.left < catcherRect.right &&
+        fallingObjectRect.right > catcherRect.left &&
+        fallingObjectRect.bottom > catcherRect.top
+    );
 }
 
-interval = setInterval(() => {
-    updateObjects();
-}, 50);
+function resetGame() {
+    clearInterval(gameInterval);
+    startGame();
+}
 
-setInterval(() => {
-    dropObjects();
-}, 1000);
+startGame();
+
+
