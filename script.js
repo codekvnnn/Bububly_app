@@ -42,4 +42,24 @@ function updateObjects() {
             if (isCaught(obj)) {
                 score++;
                 console.log('Score:', score);
-           
+            }
+            obj.remove();
+        } else {
+            obj.style.top = (objTop + 5) + 'px';
+        }
+    }
+}
+
+function isCaught(obj) {
+    let objLeft = parseInt(window.getComputedStyle(obj).getPropertyValue('left'));
+    let basketLeft = parseInt(window.getComputedStyle(basket).getPropertyValue('left'));
+    return objLeft >= basketLeft && objLeft <= basketLeft + basket.offsetWidth;
+}
+
+interval = setInterval(() => {
+    updateObjects();
+}, 50);
+
+setInterval(() => {
+    dropObjects();
+}, 1000);
